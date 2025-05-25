@@ -9,6 +9,9 @@ COPY .mvn .mvn
 # Copy source code
 COPY src src
 
+# Make Maven wrapper executable
+RUN chmod +x mvnw
+
 # Build the application
 RUN ./mvnw clean package
 
