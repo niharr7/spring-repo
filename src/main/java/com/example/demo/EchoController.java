@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class EchoController {
 
-    @Value("${openai.api.key}")
-    private String apiKey;
+    
     @PostMapping("/echo")
     public String echo(@RequestBody String input) {
         return "Received: " + input;
@@ -21,7 +20,7 @@ public class EchoController {
     @PostMapping("/openai")
     public String callOpenAI(@RequestBody String prompt) throws Exception {
         // Replace with your actual OpenAI API key or use an environment variable
-        
+        String apiKey = System.getenv("OPENAI_API_KEY");
         if (apiKey == null) {
             return "OpenAI API key not set in environment variable OPENAI_API_KEY";
         }
