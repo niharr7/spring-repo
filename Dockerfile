@@ -1,14 +1,23 @@
-# Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:17-jdk-alpine
-
-# Set the working directory
+# Build stage
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy the built WAR file from the target directory
-COPY target/demo-0.0.1-SNAPSHOT.war app.war
+# Copy Maven wrapper and pom.xml
+COPY mvnw mvnw.cmd pom.xml ./
+COPY .mvn .mvn
 
-# Expose port 8080
+# Copy source code
+COPY src src
+
+# Build the application
+RUN ./mvnw clean package
+
+# Run stage
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# Copy the built WAR file from the build stage
+COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.war app.war
+
 EXPOSE 8080
-
-# Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.war"]
