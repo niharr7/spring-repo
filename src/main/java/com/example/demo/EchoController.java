@@ -14,7 +14,7 @@ public class EchoController {
 
     @GetMapping("/echo")
     public String echoGet(@RequestParam(defaultValue = "World") String input) {
-        return "Received: " + input;
+        return "Receivedss: " + input;
     }
     
     @PostMapping("/openai")
