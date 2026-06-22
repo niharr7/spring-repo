@@ -1,0 +1,5 @@
+com\example\servletdemo\sso\SsoTrustFilter.class
+com\example\servletdemo\web\DashboardServlet.class
+com\example\servletdemo\web\LoginServlet.class
+com\example\servletdemo\web\LogoutServlet.class
+com\example\servletdemo\sso\SsoConnectorUrls.class

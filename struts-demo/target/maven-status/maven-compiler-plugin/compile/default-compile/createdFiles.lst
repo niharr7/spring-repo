@@ -1,0 +1,4 @@
+com\example\struts\sso\SsoConnectorUrls.class
+com\example\struts\action\LogoutAction.class
+com\example\struts\sso\SsoTrustFilter.class
+com\example\struts\action\LoginAction.class

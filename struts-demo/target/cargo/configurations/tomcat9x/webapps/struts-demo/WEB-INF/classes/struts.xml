@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+
+    <constant name="struts.devMode" value="false" />
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+
+    <package name="default" namespace="/" extends="struts-default">
+
+        <!-- Show the login page -->
+        <action name="login">
+            <result>/WEB-INF/jsp/login.jsp</result>
+        </action>
+
+        <!-- Process login form submission -->
+        <action name="doLogin" class="com.example.struts.action.LoginAction">
+            <result name="success" type="redirectAction">welcome</result>
+            <result name="error">/WEB-INF/jsp/login.jsp</result>
+            <result name="input">/WEB-INF/jsp/login.jsp</result>
+        </action>
+
+        <!-- Welcome (sample) page after login -->
+        <action name="welcome">
+            <result>/WEB-INF/jsp/welcome.jsp</result>
+        </action>
+
+        <!-- Logout -->
+        <action name="logout" class="com.example.struts.action.LogoutAction">
+            <result name="success" type="redirectAction">login</result>
+        </action>
+
+    </package>
+
+</struts>

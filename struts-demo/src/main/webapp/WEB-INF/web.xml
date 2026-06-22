@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <display-name>Struts 2 Demo</display-name>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- ============================================================
+         SSO Trust Filter
+         Must run BEFORE the Struts filter so unauthenticated requests
+         are bounced to the connector and authenticated requests have
+         their session set up before any Struts action runs.
+         ============================================================ -->
+    <filter>
+        <filter-name>ssoTrustFilter</filter-name>
+        <filter-class>com.example.struts.sso.SsoTrustFilter</filter-class>
+
+        <!-- Shared secret between connector and this app. MUST match the
+             X-SSO-Trust header value sent by the connector. Override per
+             environment via env var / external config in production. -->
+        <init-param>
+            <param-name>trustSecret</param-name>
+            <param-value>CHANGE_ME_SHARED_SECRET</param-value>
+        </init-param>
+
+        <!-- Configure the connector endpoint outside the WAR via one of:
+             -D sso.connector.login-url=http://host:port/sso/login
+             -D sso.connector.base-url=http://host:port
+             env SSO_CONNECTOR_LOGIN_URL / SSO_CONNECTOR_BASE_URL -->
+
+        <!-- Header names (defaults already match the connector, listed for clarity). -->
+        <init-param>
+            <param-name>userHeader</param-name>
+            <param-value>X-SSO-User</param-value>
+        </init-param>
+        <init-param>
+            <param-name>emailHeader</param-name>
+            <param-value>X-SSO-Email</param-value>
+        </init-param>
+        <init-param>
+            <param-name>nameHeader</param-name>
+            <param-value>X-SSO-Name</param-value>
+        </init-param>
+        <init-param>
+            <param-name>rolesHeader</param-name>
+            <param-value>X-SSO-Roles</param-value>
+        </init-param>
+        <init-param>
+            <param-name>trustHeader</param-name>
+            <param-value>X-SSO-Trust</param-value>
+        </init-param>
+
+        <!-- Paths that bypass authentication (static resources, health checks). -->
+        <init-param>
+            <param-name>publicPaths</param-name>
+            <param-value>/health,/static,/css,/js,/images,/favicon.ico</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ssoTrustFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>
+            org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
+        </filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
