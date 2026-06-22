@@ -1,0 +1,100 @@
+# ════════════════════════════════════════════════════════════════
+#  Multi-tenant local test override for sso-connector.
+#
+#  Uses one Azure client registration and multiple tenant aliases so you can
+#  validate tenant discovery locally.
+#
+#  Azure local testing is easiest when the OAuth callback stays on localhost,
+#  so this file prioritizes query and email-domain discovery. Host aliases are
+#  intentionally omitted here because custom HTTP dev hosts are usually not
+#  accepted as Azure web redirect URIs.
+#
+#  Run with:
+#    mvn spring-boot:run "-Dspring-boot.run.arguments=--spring.config.additional-location=file:./config/application-multitenant-test.yml"
+# ════════════════════════════════════════════════════════════════
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: c738b5fd-1ebf-482f-991e-90b9bdf3ed90
+            redirect-uri: "http://localhost:8081/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+            authorization-grant-type: authorization_code
+            client-name: Azure Entra ID
+          auth0-contoso:
+            client-id: 1qtwmEITrB07pns2MXOTK7Zra9Nw1ku5
+            redirect-uri: "http://localhost:8081/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+            authorization-grant-type: authorization_code
+            client-name: Auth0 Contoso
+        provider:
+          azure:
+            issuer-uri: https://login.microsoftonline.com/e3ff91d8-34c8-4b15-a0b4-18910a6ac575/v2.0
+          auth0-contoso:
+            issuer-uri: https://dev-r1fisdx1ldlykhre.us.auth0.com/
+
+sso:
+  connector:
+    logout:
+      # Keep false for local-only connector logout.
+      # Set true to trigger OIDC RP-initiated logout at the identity provider.
+      single-logout-enabled: true
+      # Must be registered with each provider used by this profile when SLO is enabled.
+      post-logout-redirect-uri: "{baseUrl}/"
+    login:
+      # Force the identity provider to prompt for credentials on every sign-in.
+      # Pairs with single logout so re-login after logout is not silently
+      # re-authenticated by a lingering IdP session. Leave blank to disable.
+      prompt: login
+    tenant-discovery:
+      order:
+        - query
+        - email-domain
+        - path
+        - host
+      query-param-name: tenant
+    apps:
+      struts:
+        display-name: Struts Demo
+        legacy-app-url: http://localhost:8080/struts-demo
+         
+      servlet:
+        display-name: Servlet Demo
+        legacy-app-url: http://localhost:8082/servlet-demo
+        
+      php:
+        display-name: PHP Demo
+        legacy-app-url: http://localhost:8083
+      
+    tenants:
+      acme:
+        registration-id: azure
+        provider-display-name: Azure Entra ID
+        paths:
+          - acme
+        query-values:
+          - acme
+        email-domains:
+          - acme.com
+      contoso:
+        registration-id: auth0-contoso
+        provider-display-name: Auth0
+        paths:
+          - contoso
+        query-values:
+          - contoso
+        email-domains:
+          - contoso.com
+
+logging:
+  level:
+    com.example.sso: DEBUG
