@@ -1,0 +1,15 @@
+# Build output
+target/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# Local config (NEVER commit real secrets)
+config/application-dev.yml
+config/application-*.yml
+!config/application.yml.sample

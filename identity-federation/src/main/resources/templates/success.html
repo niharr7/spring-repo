@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>SSO Login Successful</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    .card { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; max-width: 640px; }
+    .row { margin: 0.4rem 0; }
+    .label { font-weight: bold; width: 180px; display: inline-block; }
+    a.button {
+      display: inline-block; padding: 0.6rem 1rem; background: #0078d4;
+      color: white; text-decoration: none; border-radius: 4px; margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome</h1>
+  <p th:text="'Authenticated with ' + ${providerDisplayName}">Authenticated with OpenID Connect</p>
+  <p th:if="${appDisplayName}" th:text="'Application: ' + ${appDisplayName}">Application: Legacy App</p>
+  <div class="card">
+    <div class="row"><span class="label">Name:</span><span th:text="${identity.displayName}">-</span></div>
+    <div class="row"><span class="label">Email:</span><span th:text="${identity.email}">-</span></div>
+    <div class="row"><span class="label">Username:</span><span th:text="${identity.username}">-</span></div>
+    <div class="row"><span class="label">Subject:</span><span th:text="${identity.subject}">-</span></div>
+  </div>
+
+  <a class="button" th:href="${forwardUrl}">Continue to Legacy Application</a>
+  &nbsp;
+  <a class="button" href="/sso/logout" style="background:#888">Logout</a>
+</body>
+</html>

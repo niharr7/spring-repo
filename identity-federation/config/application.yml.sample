@@ -1,0 +1,62 @@
+# ════════════════════════════════════════════════════════════════
+#  Customer override file for sso-connector.
+#
+#  Place this file next to the JAR (./config/application.yml)
+#  or point to it explicitly:
+#    java -jar sso-connector.jar \
+#         --spring.config.additional-location=file:/etc/sso-connector/
+#
+#  This file holds LOCATIONS and IDs only — never secret values.
+#  Secret values come from environment variables, Key Vault,
+#  AWS Secrets Manager, HashiCorp Vault, etc.
+# ════════════════════════════════════════════════════════════════
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          oidc:
+            client-id:     ${OIDC_CLIENT_ID}
+            client-secret: ${OIDC_CLIENT_SECRET}        # supplied at runtime
+            redirect-uri:  https://sso.customer.com/login/oauth2/code/oidc
+            scope:
+              - openid
+              - profile
+              - email
+            authorization-grant-type: authorization_code
+            client-name: OpenID Connect
+        provider:
+          oidc:
+            issuer-uri: https://issuer.example.com/realms/customer
+
+sso:
+  connector:
+    registration-id: oidc
+    provider-display-name: Customer SSO
+    logout:
+      # Optional. Leave false to end only the connector session.
+      single-logout-enabled: false
+      # Used only when single logout is enabled and must be allowed by the IdP.
+      post-logout-redirect-uri: "{baseUrl}/"
+    login:
+      # Optional. Set to "login" to force the IdP to prompt for credentials on
+      # every sign-in (recommended alongside single logout). Leave blank to keep
+      # default provider behavior.
+      prompt: ""
+    tenant-discovery:
+      order:
+        - host
+        - path
+        - query
+        - email-domain
+      query-param-name: tenant
+    apps:
+      their-app:
+        display-name: Their App
+        legacy-app-url: http://internal-host:8080/their-app
+        trust-secret: ${SSO_TRUST_SECRET}               # supplied at runtime
+    claims:
+      username: preferred_username
+      email: email
+      display-name: name

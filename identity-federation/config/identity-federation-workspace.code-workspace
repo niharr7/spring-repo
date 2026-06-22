@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../struts-demo"
+		},
+		{
+			"path": "../../servlet-demo"
+		},
+		{
+			"path": "../../php-demo"
+		}
+	],
+	"settings": {}
+}
